@@ -1,7 +1,7 @@
 import observation.Observable;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         final var newOb = Observable.<Integer>create();
         final var ob = newOb.get();
         ob.onUpdate().react(value -> {
@@ -19,7 +19,7 @@ public class Main {
         });
 
 
-        try(final var observer = ob.observe()){
+        try (final var observer = ob.observe()) {
             observer.react(value -> {
                 System.out.println(value);
             });
@@ -30,7 +30,12 @@ public class Main {
             newOb.update(6);
 
         }
-            newOb.update(7);
-            newOb.update(8);
+        newOb.update(7);
+        newOb.update(8);
+
+        ob.observe(observer -> {
+            observer.react(value -> {});
+        });
+
     }
 }

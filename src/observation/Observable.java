@@ -2,6 +2,9 @@ package observation;
 
 import collections.ConcurrentHashSet;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class Observable<T> {
     private final ConcurrentHashSet<Observer<T>> observers = new ConcurrentHashSet<>();
     private final Observer<T> defaultObserver = new Observer<T>(this);
@@ -42,6 +45,18 @@ public class Observable<T> {
     }
 
     public AutoClosableObserver<T> observe(){
-        return new AutoClosableObserver(this);
+        return new AutoClosableObserver<>(this);
+    }
+
+    public void observe(Consumer<AutoClosableObserver<T>> observation){
+        try(final var observer = observe()){
+            observation.accept(observer);
+        }
+    }
+
+    public <R> R observe(Function<AutoClosableObserver<T>, R> observation){
+        try(final var observer = observe()){
+            return observation.apply(observer);
+        }
     }
 }
