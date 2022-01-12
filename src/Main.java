@@ -1,20 +1,23 @@
+import atom.Atom;
 import observation.Observable;
 
 public class Main {
     public static void main(String[] args) {
+        final var atom = new Atom<Integer>(0);
+
         final var newOb = Observable.<Integer>create();
         final var ob = newOb.get();
-        ob.onUpdate().react(value -> {
+        ob.observeForever().react(value -> {
             System.out.println("-----" + value);
         });
-        final var stop = ob.onUpdate().react(value -> {
+        final var stop = ob.observeForever().react(value -> {
             System.out.println("-=-=-" + value);
         });
-        ob.onUpdate().reactUntil(value -> {
+        ob.observeForever().reactUntil(value -> {
             System.out.println("====" + value);
             return value == 7;
         });
-        ob.onUpdate().reactOnce(value -> {
+        ob.observeForever().reactOnce(value -> {
             System.out.println("++++" + value);
         });
 

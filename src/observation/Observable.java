@@ -40,7 +40,7 @@ public class Observable<T> {
     }
 
     // ===== observing the observable ======
-    public Observer<T> onUpdate(){
+    public Observer<T> observeForever(){
         return defaultObserver;
     }
 
