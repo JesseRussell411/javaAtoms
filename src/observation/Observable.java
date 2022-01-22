@@ -40,22 +40,22 @@ public class Observable<T> {
     }
 
     // ===== observing the observable ======
-    public Observer<T> observeForever(){
+    public Observer<T> observe(){
         return defaultObserver;
     }
 
-    public AutoClosableObserver<T> observe(){
+    public AutoClosableObserver<T> tempObserve(){
         return new AutoClosableObserver<>(this);
     }
 
-    public void observe(Consumer<AutoClosableObserver<T>> observation){
-        try(final var observer = observe()){
+    public void tempObserve(Consumer<AutoClosableObserver<T>> observation){
+        try(final var observer = tempObserve()){
             observation.accept(observer);
         }
     }
 
-    public <R> R observe(Function<AutoClosableObserver<T>, R> observation){
-        try(final var observer = observe()){
+    public <R> R tempObserve(Function<AutoClosableObserver<T>, R> observation){
+        try(final var observer = tempObserve()){
             return observation.apply(observer);
         }
     }

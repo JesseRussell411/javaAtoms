@@ -61,7 +61,7 @@ public class Observer<T> {
     public Runnable reactOnce(Consumer<T> reaction) {
         try {
             closeLock.readLock().lock();
-            if (closed.get()) return null;
+            if (closed.get()) throw new ClosedObserverException(this);
 
             onceCallbacks.add(reaction);
             return () -> {
@@ -75,7 +75,7 @@ public class Observer<T> {
     public Runnable reactUntil_async(Predicate<T> reaction) {
         try {
             closeLock.readLock().lock();
-            if (closed.get()) return null;
+            if (closed.get()) throw new ClosedObserverException(this);
 
             final var flag = new AtomicBoolean(true);
             asyncUntilCallbacks.put(reaction, flag);
@@ -91,7 +91,7 @@ public class Observer<T> {
     public Runnable reactUntil_synced(Predicate<T> reaction) {
         try {
             closeLock.readLock().lock();
-            if (closed.get()) return null;
+            if (closed.get()) throw new ClosedObserverException(this);
 
             final var flag = new AtomicBoolean(true);
             syncedUntilCallbacks.put(reaction, flag);

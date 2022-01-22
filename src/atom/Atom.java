@@ -5,7 +5,7 @@ import observation.Observable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-public class Atom<T> {
+public class Atom<T> extends Observable<Atom<T>.OldAndNew> {
     private final AtomicReference<T> value = new AtomicReference<>();
 
     public Atom(T initialValue) {
@@ -22,14 +22,8 @@ public class Atom<T> {
         }
     }
 
-    private final Observable.NewObservable<OldAndNew> observableChange = Observable.create();
-
-    private void update(T oldValue, T newValue) {
-        observableChange.update(new OldAndNew(oldValue, newValue));
-    }
-
-    public Observable<OldAndNew> onChange() {
-        return observableChange.get();
+    public T get(){
+        return value.get();
     }
 
     public OldAndNew set(T value) {
@@ -40,16 +34,8 @@ public class Atom<T> {
         }
 
         final var oAndN = new OldAndNew(oldValue, value);
-        observableChange.update(oAndN);
+        update(oAndN);
         return oAndN;
-    }
-
-    public T getAndSet(T value) {
-        return set(value).oldValue;
-    }
-
-    public T setAndGet(T value) {
-        return set(value).newValue;
     }
 
     public OldAndNew mod(Function<T, T> mod) {
@@ -62,15 +48,7 @@ public class Atom<T> {
         }
 
         final var oAndN = new OldAndNew(oldValue, newValue);
-        observableChange.update(oAndN);
+        update(oAndN);
         return oAndN;
-    }
-
-    public T getAndMod(Function<T, T> mod) {
-        return mod(mod).oldValue;
-    }
-
-    public T modAndGet(Function<T, T> mod) {
-        return mod(mod).newValue;
     }
 }
